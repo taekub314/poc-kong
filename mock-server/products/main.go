@@ -22,16 +22,16 @@ var products = []Product{
 func main() {
 	r := gin.Default()
 
-	productRoutes := r.Group("/products")
+	productRoutes := r.Group("/product")
 	{
-		productRoutes.GET("", GetAllProducts)
+		productRoutes.GET("list", GetAllProducts)
 		productRoutes.GET("/:id", GetProductByID)
-		productRoutes.POST("", CreateProduct)
-		productRoutes.PUT("/:id", UpdateProduct)
-		productRoutes.DELETE("/:id", DeleteProduct)
+		productRoutes.POST("create", CreateProduct)
+		productRoutes.PUT("update/:id", UpdateProduct)
+		productRoutes.DELETE("delete/:id", DeleteProduct)
 	}
 
-	r.Run(":8081")
+	r.Run(":8080")
 }
 
 func GetAllProducts(c *gin.Context) {

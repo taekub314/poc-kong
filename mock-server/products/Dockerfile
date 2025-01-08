@@ -18,6 +18,6 @@ FROM alpine:3.21
 
 COPY --from=builder /ms-service .
 
-EXPOSE 8081
+EXPOSE 8080
 
 CMD [ "/ms-service" ]

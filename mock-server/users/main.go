@@ -21,13 +21,13 @@ var users = []User{
 func main() {
 	r := gin.Default()
 
-	userRoutes := r.Group("/users")
+	userRoutes := r.Group("/user")
 	{
-		userRoutes.GET("", GetUsers)
+		userRoutes.GET("list", GetUsers)
 		userRoutes.GET("/:id", GetUser)
-		userRoutes.POST("", CreateUser)
-		userRoutes.PUT("/:id", UpdateUser)
-		userRoutes.DELETE("/:id", DeleteUser)
+		userRoutes.POST("create", CreateUser)
+		userRoutes.PUT("update/:id", UpdateUser)
+		userRoutes.DELETE("delete/:id", DeleteUser)
 	}
 
 	r.Run(":8080")
