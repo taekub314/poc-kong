@@ -1,0 +1,103 @@
+# Disable the Kong Ingress Controller for the control plane
+ingressController:
+  enabled: false
+
+# Kong Gateway Image
+image:
+  repository: kong
+  tag: "3.9.0"
+
+# Mount the secret created earlier
+secretVolumes:
+  - kong-cluster-cert
+
+# Environment Variables
+env:
+  # This node acts as the control plane
+  role: control_plane
+
+  # Certificates for secure communication between control plane and data plane
+  cluster_cert: /etc/secrets/kong-cluster-cert/tls.crt
+  cluster_cert_key: /etc/secrets/kong-cluster-cert/tls.key
+
+  nginx_worker_processes: auto
+  mem_cache_size: 1024m
+  nginx_http_client_max_body_size: 0
+  nginx_http_client_body_buffer_size: 1024m
+
+  # Database Configuration
+  database: postgres
+  pg_database: kong
+  pg_host:
+    valueFrom:
+      secretKeyRef:
+        key: db_host
+        name: kong-secret
+  pg_user:
+    valueFrom:
+      secretKeyRef:
+        key: db_username
+        name: kong-secret
+  pg_password:
+    valueFrom:
+      secretKeyRef:
+        key: db_password
+        name: kong-secret
+  pg_ssl: "off" # Consider enabling SSL for production
+
+# Enable Enterprise features (if applicable)
+enterprise:
+  enabled: false
+
+# Admin API for the control plane
+admin:
+  enabled: true
+  type: ClusterIP
+  http:
+    enabled: true
+  tls:
+    enabled: false
+    
+
+# Optional Kong Manager (for GUI)
+manager:
+  enabled: true
+  type: ClusterIP
+  http:
+    enabled: true
+
+# Disable Proxy Role for the Control Plane
+proxy:
+  enabled: false
+
+# Clustering Configuration for Hybrid Mode
+cluster:
+  enabled: true
+  tls:
+    enabled: true
+  advertiseAddress: auto
+  dataPlane:
+    connectTimeout: 5s
+    readTimeout: 5s
+
+# Resource Requests and Limits
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Autoscaling Configuration
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
