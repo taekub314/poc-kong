@@ -31,7 +31,7 @@ func main() {
 		productRoutes.DELETE("delete/:id", DeleteProduct)
 	}
 
-	r.Run(":8080")
+	r.Run(":8081")
 }
 
 func GetAllProducts(c *gin.Context) {

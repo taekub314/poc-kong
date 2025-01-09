@@ -37,8 +37,6 @@ services:
       timeout: 30s
       retries: 3
     restart: on-failure
-    stdin_open: true # Enables interactive mode (often helpful for debugging).
-    tty: true # Enables interactive mode (often helpful for debugging).
     networks:
       - kong-net
     volumes:
@@ -67,8 +65,6 @@ services:
       timeout: 30s
       retries: 3
     restart: on-failure
-    stdin_open: true # Enables interactive mode (often helpful for debugging).
-    tty: true # Enables interactive mode (often helpful for debugging).
     networks:
       - kong-net
     volumes:
@@ -89,7 +85,8 @@ services:
     restart: on-failure
 
   kong:
-    build: .
+    # build: .
+    image: kong:3.9
     container_name: kong
     user: "${KONG_USER:-kong}"
     environment:
@@ -102,6 +99,7 @@ services:
       KONG_LOG_LEVEL: info
       KONG_PROXY_ACCESS_LOG: /dev/stdout
       KONG_PROXY_ERROR_LOG: /dev/stderr
+      # KONG_DATABASE: off
       # KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yaml"
     networks:
       - kong-net
@@ -117,8 +115,8 @@ services:
       timeout: 10s
       retries: 10
     restart: on-failure
-    # volumes:
-      # - ./config:/opt/kong
+    volumes:
+      - ./kong.yml:/opt/kong/kong.yaml
 
   konga:
     image: pantsel/konga:latest
